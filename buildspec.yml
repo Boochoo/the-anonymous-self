@@ -18,8 +18,8 @@ phases:
 
   build:
     commands:
-      - echo testing...
-      - yarn test
+      # - echo testing...
+      # - yarn test
       - echo Building...
       - yarn build
 
