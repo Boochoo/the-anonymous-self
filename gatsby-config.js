@@ -1,3 +1,6 @@
+require("dotenv").config()
+
+console.log(process.env.ACCESS_TOKEN)
 module.exports = {
   siteMetadata: {
     title: `...isms`,
@@ -6,11 +9,25 @@ module.exports = {
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-emotion`,
+    {
+      resolve: `gatsby-plugin-chakra-ui`,
+      options: {
+        isResettingCSS: true,
+        isUsingColorMode: false,
+      },
+    },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `images`,
         path: `${__dirname}/src/images`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-typography`,
+      options: {
+        pathToConfigModule: `src/shared/typography`,
       },
     },
     `gatsby-transformer-sharp`,
@@ -30,10 +47,11 @@ module.exports = {
     {
       resolve: `gatsby-source-contentful`,
       options: {
-        spaceId: `7yb9wterex54`,
-        accessToken: `046c9PohVlfqJ_bdZIjDF6Za9RzRHgTiFzW732ugfyM`,
+        spaceId: process.env.SPACE_ID,
+        accessToken: process.env.ACCESS_TOKEN,
       },
     },
+
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

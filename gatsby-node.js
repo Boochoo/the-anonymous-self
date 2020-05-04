@@ -2,11 +2,11 @@ const path = require("path")
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions
-  const lessonTemplate = path.resolve(`src/templates/post.js`)
+  const postsTemplate = path.resolve(`src/components/templates/post.js`)
 
   return graphql(`
     {
-      allContentfulPost {
+      allContentfulPost(sort: { order: ASC, fields: [date] }) {
         edges {
           node {
             slug
@@ -18,13 +18,18 @@ exports.createPages = ({ graphql, actions }) => {
     if (result.errors) {
       throw result.errors
     }
+    const posts = result.data.allContentfulPost.edges
 
-    result.data.allContentfulPost.edges.forEach(edge => {
+    posts.forEach(({ node }, index) => {
+      const path = `/posts/${node.slug}`
+
       createPage({
-        path: `/posts/${edge.node.slug}`,
-        component: lessonTemplate,
+        path,
+        component: postsTemplate,
         context: {
-          slug: edge.node.slug,
+          slug: node.slug,
+          prev: index === 0 ? null : posts[index - 1].node,
+          next: index === posts.length - 1 ? null : posts[index + 1].node,
         },
       })
     })

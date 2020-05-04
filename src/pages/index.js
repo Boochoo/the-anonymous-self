@@ -1,56 +1,62 @@
 import React from "react"
 import { graphql } from "gatsby"
+import { ThemeProvider, CSSReset, Heading, Box } from "@chakra-ui/core"
+import { generate as generateId } from "shortid"
 
-import Layout from "../components/layout"
+import Layout from "../components/layout/layout"
 import SEO from "../components/seo"
 import Card from "../components/card"
 
-const cardStyle = {
-  paddingBottom: "0.5rem",
-  borderRadius: "0.5rem",
-  background: "#fff",
-}
-
 const IndexPage = ({ data: { allContentfulPost } }) => (
-  <Layout>
-    <SEO
-      title="Ermi's blog"
-      keywords={[`music`, `programming`, `philosophy`, `meditation`]}
-    />
-    <div className="container lg:max-w-screen-lg mx-auto px-6 py-10">
-      <div className="mb8">
-        <div className="flex items-baseline justify-between border-b-2 border-grey-light mb-10">
-          <h2 className="text-base font-display font-bold tracking-wide uppercase py-4 -mb-2px">
-            Blog
-          </h2>
-        </div>
-        <div className="flex flex-wrap -mx-3" style={cardStyle}>
-          {allContentfulPost.edges.map(({ node }) => (
-            <Card
-              node={{ ...node, slug: `/posts/${node.slug}` }}
-              key={node.id}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  </Layout>
+  <ThemeProvider>
+    <Layout>
+      <CSSReset />
+      <SEO
+        title="Ermi's blog"
+        keywords={[`music`, `programming`, `philosophy`, `meditation`]}
+      />
+      <Box>
+        <Box mt="1">
+          <Box>
+            <Heading as="h3" fontFamily="unset">
+              Blog
+            </Heading>
+          </Box>
+          <Box mt="6">
+            {allContentfulPost.edges.map(({ node }) => {
+              return (
+                <Card
+                  node={{ ...node, slug: `/posts/${node.slug}` }}
+                  key={generateId()}
+                />
+              )
+            })}
+          </Box>
+        </Box>
+      </Box>
+    </Layout>
+  </ThemeProvider>
 )
 
 export default IndexPage
 
 export const query = graphql`
   {
-    allContentfulPost {
+    allContentfulPost(sort: { order: DESC, fields: [date] }) {
       edges {
         node {
           title
           slug
+          description {
+            description
+          }
           image {
             file {
               url
             }
           }
+          date(formatString: "MMMM D, YYYY")
+          id
         }
       }
     }
